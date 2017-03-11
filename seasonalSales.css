@@ -2,12 +2,33 @@
 	background-color: green;
 }*/
 .name {
-	background-color: red;
-	color: white;
-	/*display: inline-block;*/
+	
 }
 
 .price {
-	color: blue;
-	/*display: inline-block;*/
+	
 }
+
+.department {
+	
+}
+
+#container {
+	background-color: #00ffff;
+	color: blue;
+	margin: 20px;
+	padding: 10px;
+	border: 2px red solid;
+}
+
+.shareLine {
+	display: inline-block;
+	 
+}
+
+.background {
+	background-color: #00ced1;
+	margin-left: 10px;
+	color: red;
+}
+

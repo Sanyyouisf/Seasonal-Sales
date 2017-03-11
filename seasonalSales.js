@@ -1,47 +1,40 @@
 //You should load both file via XHRs
 // and store the contents in two different JavaScript variables in your code.
 
+//*** the variables**//
 var myProductRequest = new XMLHttpRequest();
 var myDepartementRequest = new XMLHttpRequest();
 var container = document.getElementById("container");
+var productString = "";
+var currentproduct;
+var departmentString = "";
+var currentdepartment;
+//make xhrDData is a globale variable to use it back in makeProductDom function
+var xhrDData ={};
+
 
 //lists all the products ,department name, and the price.
 function makeProductDom(xhrPData){    
-    var productString = "";
-    var currentproduct;
     for(var i = 0; i < xhrPData.products.length; i++) {
         currentproduct = xhrPData.products[i];
-        productString += `<h3 class="name">${i+1} -product name : ${xhrPData.products[i].name}</h3> `;
-        productString +=`<h5 class="price">price  : ${xhrPData.products[i].price}</h5>`;
-        console.log("the product loop number : ",i);
-        // makeDepartmentDom(xhrDData);
-
-		    function makeDepartmentDom(xhrDData){
-		    	console.log("makeDepartmentDom function");
-		    	for(var j = 0; j < xhrDData.categories.length; j++) {
-		    		console.log("for statement");	
-		        	if ( xhrPData.products[i].category_id === xhrDData.categories[j].id){
-		        		departmentString += `<h3> the department is ${xhrDData.categories[j].name}</h3>`	;
-		    			console.log("the department loop number : ",j);
-		    		}
+        productString += `<p class="background shareLine">${i+1}- product:</p> <p class="shareLine">${xhrPData.products[i].name}</p> `;
+        productString +=`<p class="background shareLine">- price  :</p> <p class="shareLine">${xhrPData.products[i].price}</p>`;
+		    for(var j = 0; j < xhrDData.categories.length; j++) {
+		    	if ( currentproduct.category_id === xhrDData.categories[j].id){
+		        	productString += `<p class="background shareLine">- department :</p> <p class="shareLine">${xhrDData.categories[j].name}</p> `;
+		        	productString +=  `<br>`;
 		    	}
-        	}
+		   	}
     }
+    console.log("xhrPData is : " ,xhrPData);
+    console.log("xhrDData is : ",xhrDData);
     container.innerHTML = productString;
 }
 
-// function makeDepartmentDom(xhrDData){
-// 		    	console.log("makeDepartmentDom function");
-// 		    	for(var j = 0; j < xhrDData.categories.length; j++) {
-// 		    		console.log("for statement");	
-// 		        	if ( xhrPData.products[i].category_id === xhrDData.categories[j].id){
-// 		        		departmentString += `<h3> the department is ${xhrDData.categories[j].name}</h3>`	;
-// 		    			console.log("the department loop number : ",j);
-// 		    		}
-// 		    	}
-//         	}
 
-
+function makeDepartmentDom(DData){
+	xhrDData=DData;
+}
 
 function executeProductAfterFileLoaded(){
     var data = JSON.parse(this.responseText);
@@ -50,21 +43,20 @@ function executeProductAfterFileLoaded(){
 }
 
 
-// function executeDepartementAfterFileLoaded(){
-//     var data = JSON.parse(this.responseText);
-//     console.log("my Departement Data is : ", data);
-//     makeDepartmentDom(data);
-// }
+function executeDepartementAfterFileLoaded(){
+    var data = JSON.parse(this.responseText);
+    console.log("my Departement Data is : ", data);
+    makeDepartmentDom(data);
+}
 
 myProductRequest.addEventListener("load", executeProductAfterFileLoaded);
-// myDepartementRequest.addEventListener("load", executeDepartementAfterFileLoaded)
+myDepartementRequest.addEventListener("load", executeDepartementAfterFileLoaded)
 
 myProductRequest.open("GET","products.json");
 myDepartementRequest.open("GET","departments.json");
 
-myProductRequest.send();
 myDepartementRequest.send();
-// console.log("myRequest", myRequest);
+myProductRequest.send();
 
 
 //Your job is to build a web page that  
