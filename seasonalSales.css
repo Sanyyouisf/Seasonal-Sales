@@ -1,0 +1,13 @@
+/*body {
+	background-color: green;
+}*/
+.name {
+	background-color: red;
+	color: white;
+	/*display: inline-block;*/
+}
+
+.price {
+	color: blue;
+	/*display: inline-block;*/
+}
