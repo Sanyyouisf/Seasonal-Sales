@@ -6,6 +6,7 @@ var myProductRequest = new XMLHttpRequest();
 var myDepartementRequest = new XMLHttpRequest();
 var container = document.getElementById("container");
 var selectedSeason = document.getElementById("season_discount");
+var reset = document.getElementById("season_discount");
 var currentproduct;
 var departmentString = "";
 var currentdepartment;
@@ -24,18 +25,15 @@ function makeProductDom(PData){
         				 <p class="shareLine">${PData.products[i].name}</p> `;
         productString +=`<p class="background shareLine">- price :</p>
         				 <p class="shareLine">${PData.products[i].price}</p>`;
-		    for(var j = 0; j < xhrDData.categories.length; j++) {
-		    	if ( currentproduct.category_id === xhrDData.categories[j].id){
-		        	productString += `<p class="background shareLine">- department :</p> <p class="shareLine">${xhrDData.categories[j].name}</p> `;
-		        	productString +=  `<br>`;
-		    	}
-		   	}
-    }
-    // console.log("PData is : " ,PData);
-    // console.log("xhrDData is : ",xhrDData);
+		for(var j = 0; j < xhrDData.categories.length; j++) {
+		    if (currentproduct.category_id === xhrDData.categories[j].id){
+		        productString += `<p class="background shareLine">- department :</p> <p class="shareLine">${xhrDData.categories[j].name}</p> `;
+		        productString +=  `<br>`;
+		    };
+		};
+    };
     container.innerHTML = productString;
-}
-
+};
 
 
 function makeDepartmentDom(DData){
@@ -44,11 +42,9 @@ function makeDepartmentDom(DData){
 
 function executeProductAfterFileLoaded(){
     var data = JSON.parse(this.responseText);
-    // console.log("my Product Data is : ", data);
     xhrPData= data;
     makeProductDom(data);
 }
-
 
 function executeDepartementAfterFileLoaded(){
     var data = JSON.parse(this.responseText);
@@ -56,6 +52,8 @@ function executeDepartementAfterFileLoaded(){
     makeDepartmentDom(data);
 }
 
+
+//add event listener for the delect element
 selectedSeason.addEventListener("change",function(){
 	updatePrice();	
 });
@@ -84,8 +82,7 @@ function updatePrice(){
 				 	newProducts.products[i].price = price - (price*discound);
 				 	console.log (" price after",newProducts.products[i].price)
 				};
-			};
-		
+			};		
 		};
 	};
 	makeProductDom(newProducts);
@@ -99,9 +96,3 @@ myDepartementRequest.open("GET","departments.json");
 
 myDepartementRequest.send();
 myProductRequest.send();
-
-
-//Your job is to build a web page that  
-//Additionally, put a <select> element at the top of the page that contains all possible 
-//values of the season_discount key in the categories file. As soon as you select one of the seasons, all prices on the page should immediately be discounted by the corresponding percentage.
-
