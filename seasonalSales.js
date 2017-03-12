@@ -5,20 +5,25 @@
 var myProductRequest = new XMLHttpRequest();
 var myDepartementRequest = new XMLHttpRequest();
 var container = document.getElementById("container");
-var productString = "";
+var selectedSeason = document.getElementById("season_discount");
 var currentproduct;
 var departmentString = "";
 var currentdepartment;
+var newPricetString="";
 //make xhrDData is a globale variable to use it back in makeProductDom function
 var xhrDData ={};
-
+var xhrPData = {};
 
 //lists all the products ,department name, and the price.
-function makeProductDom(xhrPData){    
-    for(var i = 0; i < xhrPData.products.length; i++) {
-        currentproduct = xhrPData.products[i];
-        productString += `<p class="background shareLine">${i+1}- product:</p> <p class="shareLine">${xhrPData.products[i].name}</p> `;
-        productString +=`<p class="background shareLine">- price  :</p> <p class="shareLine">${xhrPData.products[i].price}</p>`;
+function makeProductDom(PData){ 
+	var productString = "";
+	container.innerHTML="";
+    for(var i = 0; i < PData.products.length; i++) {
+        currentproduct = PData.products[i];
+        productString +=`<p class="background shareLine">${i+1}- product :</p>
+        				 <p class="shareLine">${PData.products[i].name}</p> `;
+        productString +=`<p class="background shareLine">- price :</p>
+        				 <p class="shareLine">${PData.products[i].price}</p>`;
 		    for(var j = 0; j < xhrDData.categories.length; j++) {
 		    	if ( currentproduct.category_id === xhrDData.categories[j].id){
 		        	productString += `<p class="background shareLine">- department :</p> <p class="shareLine">${xhrDData.categories[j].name}</p> `;
@@ -26,10 +31,11 @@ function makeProductDom(xhrPData){
 		    	}
 		   	}
     }
-    console.log("xhrPData is : " ,xhrPData);
-    console.log("xhrDData is : ",xhrDData);
+    // console.log("PData is : " ,PData);
+    // console.log("xhrDData is : ",xhrDData);
     container.innerHTML = productString;
 }
+
 
 
 function makeDepartmentDom(DData){
@@ -38,7 +44,8 @@ function makeDepartmentDom(DData){
 
 function executeProductAfterFileLoaded(){
     var data = JSON.parse(this.responseText);
-    console.log("my Product Data is : ", data);
+    // console.log("my Product Data is : ", data);
+    xhrPData= data;
     makeProductDom(data);
 }
 
@@ -48,6 +55,41 @@ function executeDepartementAfterFileLoaded(){
     console.log("my Departement Data is : ", data);
     makeDepartmentDom(data);
 }
+
+selectedSeason.addEventListener("change",function(){
+	updatePrice();	
+});
+
+function updatePrice(){
+	console.log("selectedSeason value",selectedSeason.value )
+	//to make a copy of the productsobjects and use it here 
+	//because i don't like to override the original one 
+	var newProducts= xhrPData;
+	console.log("selected seasons is: ",selectedSeason.value);
+	for(var j = 0; j < xhrDData.categories.length; j++) {
+		if (selectedSeason.value === xhrDData.categories[j].season_discount){
+			//determine the discound amount and the 
+			var newProducts= xhrPData;
+			var discound = xhrDData.categories[j].discount ;
+			var id = xhrDData.categories[j].id ;
+			console.log("selected catagory is : ",xhrDData.categories[j].season_discount);
+			console.log("discound is : ",discound);
+			console.log("id is : ",id);
+			for(var i = 0; i < newProducts.products.length; i++){
+				if (id === newProducts.products[i].category_id){
+				 	//update the price of the selected season
+				 	console.log("the product name that should have discound is ",newProducts.products[i].name);
+				 	var price = newProducts.products[i].price;
+				 	console.log (" price befor",price);
+				 	newProducts.products[i].price = price - (price*discound);
+				 	console.log (" price after",newProducts.products[i].price)
+				};
+			};
+		
+		};
+	};
+	makeProductDom(newProducts);
+};
 
 myProductRequest.addEventListener("load", executeProductAfterFileLoaded);
 myDepartementRequest.addEventListener("load", executeDepartementAfterFileLoaded)
@@ -62,24 +104,4 @@ myProductRequest.send();
 //Your job is to build a web page that  
 //Additionally, put a <select> element at the top of the page that contains all possible 
 //values of the season_discount key in the categories file. As soon as you select one of the seasons, all prices on the page should immediately be discounted by the corresponding percentage.
-
-//For example, when Spring is chosen, all products in the corresponding Household category should have their prices updated with a 15% discount off the base price.
-
-//The two JSON representations above should be in two files: products.json, and categories.json. You should load both file via XHRs and store the contents in two different JavaScript variables in your code.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
