@@ -24,7 +24,7 @@ function makeProductDom(PData){
         productString +=`<p class="background shareLine">${i+1}- product :</p>
         				 <p class="shareLine">${PData.products[i].name}</p> `;
         productString +=`<p class="background shareLine">- price :</p>
-        				 <p class="shareLine">${PData.products[i].price}</p>`;
+        				 <p class="shareLine">${PData.products[i].price.toFixed(2)}</p>`;
 		for(var j = 0; j < xhrDData.categories.length; j++) {
 		    if (currentproduct.category_id === xhrDData.categories[j].id){
 		        productString += `<p class="background shareLine">- department :</p> <p class="shareLine">${xhrDData.categories[j].name}</p> `;
